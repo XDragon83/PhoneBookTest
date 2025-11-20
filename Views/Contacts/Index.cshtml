@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Phonebook.Models.Contact>
+
+<h2>Phonebook</h2>
+
+<a class="btn btn-primary" href="/Contacts/Create">Add New Contact</a>
+
+<table class="table table-bordered table-striped mt-3">
+    <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Phone</td>
+            <td>@item.Email</td>
+            <td>
+                <a href="/Contacts/Edit/@item.Id">Edit</a> |
+                <a href="/Contacts/Details/@item.Id">Details</a> |
+                <a href="/Contacts/Delete/@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,13 @@
+﻿@model Phonebook.Models.Contact
+
+<h2>Create Contact</h2>
+
+<form method="post">
+    <input asp-for="Name" class="form-control" placeholder="Name" />
+    <br />
+    <input asp-for="Phone" class="form-control" placeholder="Phone" />
+    <br />
+    <input asp-for="Email" class="form-control" placeholder="Email" />
+    <br />
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
