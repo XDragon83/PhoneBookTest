@@ -5,9 +5,11 @@
 <form method="post">
     <input asp-for="Name" class="form-control" placeholder="Name"/>
     <br />
-    <input asp-for="Phone" class="form-control" placeholder="Phone" pattern="tel" />
+    <input asp-for="Phone" class="form-control" placeholder="Phone" />
     <br />
-    <input asp-for="Email" class="form-control" placeholder="Email" pattern="email"/>
+    <input asp-for="Email" class="form-control" placeholder="Email"/>
+    <br />
+    <input asp-for="Birthday" class="form-control" type="date" />
     <br />
     <button type="submit" class="btn btn-success">Save</button>
 </form>

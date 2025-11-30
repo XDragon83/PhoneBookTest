@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using PhoneBook.Models;
 
 namespace Phonebook.Models
 {
@@ -15,5 +16,7 @@ namespace Phonebook.Models
 
         [MaxLength(100)]
         public string? Email { get; set; }
+        public ContactPicture? Picture { get; set; }
+        public DateTime? Birthday { get; set; }
     }
 }
