@@ -6,19 +6,25 @@
 
 <table class="table table-bordered table-striped mt-3">
     <tr>
+        <th>Picture</th>
         <th>Name</th>
         <th>Phone</th>
         <th>Email</th>
         <th>Birthday</th>
         <th></th>
     </tr>
+
     @foreach (var item in Model)
     {
         <tr>
+            <td>
+                <img src="/Contacts/GetImage/@item.Id"
+                     style="width:60px; height:60px; object-fit:cover; border-radius:5px;" />
+            </td>
             <td>@item.Name</td>
             <td>@item.Phone</td>
             <td>@item.Email</td>
-            <td>@item.Birthday</td>
+            <td>@item.Birthday?.ToShortDateString()</td>
             <td>
                 <a class="btn btn-secondary" href="/Contacts/Edit/@item.Id">Edit</a>
                 <a class="btn btn-info" href="/Contacts/Details/@item.Id">Details</a>

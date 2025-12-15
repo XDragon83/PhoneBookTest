@@ -16,9 +16,9 @@ namespace PhoneBook.Models
         public required Contact Contact { get; set; }
 
         // The image file stored as a byte array
-        public byte[]? ImageData { get; set; }
+        public required byte[] ImageData { get; set; }
 
         // MIME type (image/png, image/jpeg)
-        public string? ContentType { get; set; }
+        public required string ContentType { get; set; }
     }
 }

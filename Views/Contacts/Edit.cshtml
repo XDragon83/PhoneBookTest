@@ -1,50 +1,84 @@
 ﻿@model Phonebook.Models.Contact
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Contact";
 }
 
-<h1>Edit</h1>
+<h2>Edit Contact</h2>
 
-<h4>Contact</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Birthday" class="control-label"></label>
-                <input asp-for="Birthday" class="form-control" type="date" />
-                <span asp-validation-for="Birthday" class="text-danger"></span>
-            </div>
-            <br/>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
     </div>
-</div>
 
-<div>
-    <a class="btn btn-info" asp-action="Index">Back to List</a>
-</div>
+    <div class="form-group">
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Birthday"></label>
+        <input asp-for="Birthday" type="date" class="form-control" />
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+
+<hr />
+
+<h4>Picture</h4>
+
+@if (Model.Picture != null)
+{
+    <div style="margin-bottom:10px;">
+        <img src="/Contacts/GetImage/@Model.Id"
+             style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;" />
+    </div>
+
+    <!-- Separate form to delete picture -->
+    <form asp-action="DeleteImage" asp-controller="Contacts" method="post">
+        <input type="hidden" name="contactId" value="@Model.Id" />
+        <button type="submit" class="btn btn-outline-danger">Delete Picture</button>
+    </form>
+
+    <br />
+    <br />
+    <!-- Separate form to replace existing picture -->
+    <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="contactId" value="@Model.Id" />
+        <div class="form-group">
+            <label>Replace Picture</label>
+            <input type="file" name="file" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Upload/Replace Picture</button>
+    </form>
+}
+else
+{
+    <!-- No picture: allow upload -->
+    <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="contactId" value="@Model.Id" />
+        <div class="form-group">
+            <label>Upload Picture</label>
+            <input type="file" name="file" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Upload Picture</button>
+    </form>
+}
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
