@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Phonebook.Models;
+using PhoneBook.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

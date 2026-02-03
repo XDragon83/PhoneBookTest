@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Phonebook.Models;
+using PhoneBook.Data;
 using PhoneBook.Models;
 using System.Net.Cache;
 using System.Threading.Tasks;
 
-namespace Phonebook.Controllers
+namespace PhoneBook.Controllers
 {
     public class ContactsController : Controller
     {
@@ -52,15 +52,20 @@ namespace Phonebook.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction(nameof(Edit), new { id = contactId });
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> EditImage(int contactId, IFormFile file)
         {
+            if (!file.ContentType.StartsWith("image/"))
+            {
+                return BadRequest("Only image files are allowed");
+            }
+
             if (file == null || file.Length == 0)
-                return BadRequest();
+                return RedirectToAction(nameof(Edit), new { id = contactId });
 
             ContactPicture? picture = _context.ContactPictures.FirstOrDefault(p => p.ContactId == contactId);
             byte[] fileBytes = await ConvertFileToBytes(file);
@@ -111,7 +116,11 @@ namespace Phonebook.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Contact contact, IFormFile file)
         {
-            if (file != null)
+            if (!ModelState.IsValid)
+            {
+                return View(contact);
+            }
+            if (file != null && file.ContentType.StartsWith("image/"))
             {
                 contact.Picture = new ContactPicture
                 {
@@ -144,14 +153,13 @@ namespace Phonebook.Controllers
         public async Task<IActionResult> Edit(int id, Contact contact)
         {
             if (id != contact.Id) return NotFound();
+            if (!ModelState.IsValid) return View(contact);
 
-            if (ModelState.IsValid)
-            {
-                _context.Update(contact);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(contact);
+            _context.Update(contact);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
+
         }
 
         //[HttpPost]

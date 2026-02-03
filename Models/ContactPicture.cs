@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Phonebook.Models;
 
 namespace PhoneBook.Models
 {
     public class ContactPicture
     {
+        private const int MaxImageSizeInBytes = 5 * 1024 * 1024; // 5MB
         [Key]
         public int Id { get; set; }
 
@@ -16,6 +16,8 @@ namespace PhoneBook.Models
         public required Contact Contact { get; set; }
 
         // The image file stored as a byte array
+        [Required] // Max size 5MB
+        [MaxLength(MaxImageSizeInBytes, ErrorMessage = "Image size is larger than the set size")]
         public required byte[] ImageData { get; set; }
 
         // MIME type (image/png, image/jpeg)

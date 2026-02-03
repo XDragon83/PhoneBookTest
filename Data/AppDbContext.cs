@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.Models;
 
-namespace Phonebook.Models
+namespace PhoneBook.Data
 {
     public class AppDbContext : DbContext
     {
