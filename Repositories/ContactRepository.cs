@@ -1,73 +1,49 @@
-﻿using PhoneBook.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PhoneBook.Data;
+using PhoneBook.Models;
 using PhoneBook.Repositories.Interfaces;
 
 namespace PhoneBook.Repositories
 {
     public class ContactRepository : IContactRepository
     {
-        public void AddContact(Contact contact)
+        private readonly AppDbContext _context;
+
+        public ContactRepository(AppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public void AddContactPicture(Contact contact, ContactPicture contactPicture)
+        public async Task<Contact?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Contacts
+                .Include(c => c.Picture)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public void DeleteContact(int id)
+        public async Task<IEnumerable<Contact>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Contacts
+                .Include(c => c.Picture)
+                .ToListAsync();
         }
 
-        public void DeleteContactPicture(int id)
+        public async Task AddAsync(Contact contact)
         {
-            throw new NotImplementedException();
+            await _context.Contacts.AddAsync(contact);
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteContactPicture(Contact contact)
+        public async Task UpdateAsync(Contact contact)
         {
-            throw new NotImplementedException();
+            _context.Contacts.Update(contact);
+            await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<ContactPicture> GetAllContactPictures()
+        public async Task DeleteAsync(Contact contact)
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Contact> GetAllContacts()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Contact GetContact(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ContactPicture GetContactPicture(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ContactPicture GetContactPicture(Contact contact)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateContact(Contact contact)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateContactPicture(Contact contact, ContactPicture contactPicture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateContactPicture(int id, ContactPicture contactPicture)
-        {
-            throw new NotImplementedException();
+            _context.Contacts.Remove(contact);
+            await _context.SaveChangesAsync();
         }
     }
 }

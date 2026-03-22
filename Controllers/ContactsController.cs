@@ -85,7 +85,8 @@ namespace PhoneBook.Controllers
                     ContactId = contactId,
                     Contact = contact,
                     ImageData = fileBytes,
-                    ContentType = file.ContentType
+                    ContentType = file.ContentType,
+                    ThumbnailData = fileBytes
                 };
                 _context.ContactPictures.Add(picture);
             }
@@ -126,7 +127,8 @@ namespace PhoneBook.Controllers
                 {
                     Contact = contact,
                     ContentType = file.ContentType,
-                    ImageData = await ConvertFileToBytes(file)
+                    ImageData = await ConvertFileToBytes(file),
+                    ThumbnailData = await ConvertFileToBytes(file)
                 };
             }
 
