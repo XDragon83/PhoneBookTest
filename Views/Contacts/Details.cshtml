@@ -4,12 +4,27 @@
     ViewData["Title"] = "Details";
 }
 
+@{
+    string? base64Image = null;
+
+    if (Model.Picture != null && Model.Picture.ImageData != null)
+    {
+        string mimeType = Model.Picture.ContentType; // example: "image/jpeg"
+        string base64 = Convert.ToBase64String(Model.Picture.ImageData);
+        base64Image = $"data:{mimeType};base64,{base64}";
+    }
+    else
+    {
+        base64Image = "/images/default_contact.png";
+    }
+}
+
 <h1>Details</h1>
 
 <div class="mb-3">
     <h4>Picture</h4>
     <div>
-        <img src="/Contacts/GetImage/@Model.Id"
+        <img src=@base64Image
              style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;"
              alt="Contact picture" />
     </div>

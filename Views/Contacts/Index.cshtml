@@ -16,9 +16,23 @@
 
     @foreach (var item in Model)
     {
+    
+        string base64Image;
+
+        if (item.Picture != null && item.Picture.ImageData != null)
+        {
+            string mimeType = item.Picture.ContentType; // example: "image/jpeg"
+            string base64 = Convert.ToBase64String(item.Picture.ImageData);
+            base64Image = $"data:{mimeType};base64,{base64}";
+        }
+        else
+        {
+            base64Image = "/images/default_contact.png";
+        }
+
         <tr>
             <td>
-                <img src="/Contacts/GetImage/@item.Id"
+                <img src= @base64Image
                      style="width:60px; height:60px; object-fit:cover; border-radius:5px;" />
             </td>
             <td>@item.Name</td>

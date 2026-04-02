@@ -1,6 +1,6 @@
 ﻿using PhoneBook.Models;
 
-namespace PhoneBook.Services
+namespace PhoneBook.Services.Interfaces
 {
     public interface IContactService
     {

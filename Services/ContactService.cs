@@ -2,6 +2,7 @@
 using PhoneBook.Repositories.Interfaces;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using PhoneBook.Services.Interfaces;
 
 namespace PhoneBook.Services
 {

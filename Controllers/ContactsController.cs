@@ -3,111 +3,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.Data;
 using PhoneBook.Models;
-using System.Net.Cache;
-using System.Threading.Tasks;
+using PhoneBook.Services.Interfaces;
 
 namespace PhoneBook.Controllers
 {
     public class ContactsController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IContactService _service;
 
-        public ContactsController(AppDbContext context)
+        public ContactsController(IContactService service)
         {
-            _context = context;
-        }
-
-        private async Task<byte[]> ConvertFileToBytes(IFormFile file)
-        {
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
-            return memoryStream.ToArray();
+            _service = service;
         }
 
 
         // LIST
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Contacts.ToListAsync());
+            return View(await _service.GetAllAsync());
         }
-
-        public IActionResult GetImage(int Id)
-        {
-            ContactPicture? picture = _context.ContactPictures.FirstOrDefault(p => p.ContactId == Id);
-            if (picture == null || picture.ImageData == null)
-                return File("~/images/default_contact.png", "image/png");
-
-            return File(picture.ImageData, picture.ContentType);
-        }
-
-        public IActionResult DeleteImage(int contactId)
-        {
-            ContactPicture? picture = _context.ContactPictures.FirstOrDefault(p => p.ContactId == contactId);
-
-            if (picture != null)
-            {
-                _context.ContactPictures.Remove(picture);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Edit), new { id = contactId });
-            }
-            else
-            {
-                return RedirectToAction(nameof(Edit), new { id = contactId });
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditImage(int contactId, IFormFile file)
-        {
-            if (!file.ContentType.StartsWith("image/"))
-            {
-                return BadRequest("Only image files are allowed");
-            }
-
-            if (file == null || file.Length == 0)
-                return RedirectToAction(nameof(Edit), new { id = contactId });
-
-            ContactPicture? picture = _context.ContactPictures.FirstOrDefault(p => p.ContactId == contactId);
-            byte[] fileBytes = await ConvertFileToBytes(file);
-
-            if (picture != null)
-            {
-                picture.ImageData = fileBytes;
-                picture.ContentType = file.ContentType;
-                _context.ContactPictures.Update(picture);
-            }
-            else
-            {
-                Contact? contact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
-                if (contact == null) return NotFound();
-                picture = new ContactPicture
-                {
-                    ContactId = contactId,
-                    Contact = contact,
-                    ImageData = fileBytes,
-                    ContentType = file.ContentType,
-                    ThumbnailData = fileBytes
-                };
-                _context.ContactPictures.Add(picture);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Edit), new { id = contactId });
-        }
-
-
         // DETAILS
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (!id.HasValue)
+                return NotFound();
 
-            var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == id);
-            if (contact == null) return NotFound();
+            var contact = await _service.GetByIdAsync(id.Value);
+
+            if (contact == null)
+                return NotFound();
 
             return View(contact);
         }
 
         // CREATE (GET)
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -115,135 +45,93 @@ namespace PhoneBook.Controllers
 
         // CREATE (POST)
         [HttpPost]
-        public async Task<IActionResult> Create(Contact contact, IFormFile file)
+        public async Task<IActionResult> Create(Contact contact, IFormFile? file)
         {
             if (!ModelState.IsValid)
             {
                 return View(contact);
             }
-            if (file != null && file.ContentType.StartsWith("image/"))
-            {
-                contact.Picture = new ContactPicture
-                {
-                    Contact = contact,
-                    ContentType = file.ContentType,
-                    ImageData = await ConvertFileToBytes(file),
-                    ThumbnailData = await ConvertFileToBytes(file)
-                };
-            }
 
-            _context.Add(contact);
-            await _context.SaveChangesAsync();
+            await _service.CreateAsync(contact, file);
+
             return RedirectToAction(nameof(Index));
         }
 
-
-
-        // EDIT (GET)
-        public async Task<IActionResult> Edit(int? id)
+        // DELETE (GET)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (!id.HasValue) return NotFound();
 
-            var contact = await _context.Contacts.Include(c => c.Picture).FirstOrDefaultAsync(c => c.Id == id);
+            Contact? contact = await _service.GetByIdAsync(id.Value);
+
             if (contact == null) return NotFound();
 
             return View(contact);
+        }
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int? id)
+        {
+            if (id.HasValue)
+            {
+                await _service.DeleteAsync(id.Value);
+                return RedirectToAction(nameof(Index));
+            }
+            return NotFound();
+        }
+
+        // EDIT (GET)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id.HasValue)
+            {
+                Contact? contact = await _service.GetByIdAsync(id.Value);
+                if (contact != null)
+                {
+                    return View(contact);
+                }
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(int? id)
+        {
+            if (id.HasValue)
+            {
+                await _service.RemovePictureAsync(id.Value);
+                return RedirectToAction(nameof(Edit), new { id = id });
+            }
+            return NotFound();
         }
 
         // EDIT (POST)
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Contact contact)
         {
-            if (id != contact.Id) return NotFound();
             if (!ModelState.IsValid) return View(contact);
+            if (await _service.GetByIdAsync(id) == null || id != contact.Id) return NotFound();
+            await _service.UpdateAsync(contact, null);
 
-            _context.Update(contact);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-
-
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, Contact contact, IFormFile? file, bool deletePicture)
-        //{
-        //    if (id != contact.Id) return NotFound();
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        var existingContact = await _context.Contacts
-        //            .Include(c => c.Picture)
-        //            .FirstOrDefaultAsync(c => c.Id == id);
-
-        //        if (existingContact == null)
-        //            return NotFound();
-
-        //        existingContact.Name = contact.Name;
-        //        existingContact.Phone = contact.Phone;
-        //        existingContact.Email = contact.Email;
-        //        existingContact.Birthday = contact.Birthday;
-
-        //        // DELETE picture
-        //        if (deletePicture && existingContact.Picture != null)
-        //        {
-        //            _context.ContactPictures.Remove(existingContact.Picture);
-        //            existingContact.Picture = null;
-        //        }
-
-        //        // UPLOAD new picture
-        //        if (file != null)
-        //        {
-        //            if (existingContact.Picture != null)
-        //            {
-        //                existingContact.Picture.ContentType = file.ContentType;
-        //                existingContact.Picture.ImageData = await ConvertFileToBytes(file);
-        //            }
-        //            else
-        //            {
-        //                existingContact.Picture = new ContactPicture
-        //                {
-        //                    Contact = existingContact,
-        //                    ContentType = file.ContentType,
-        //                    ImageData = await ConvertFileToBytes(file),
-        //                    ContactId = existingContact.Id
-        //                };
-        //            }
-        //        }
-
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    return View(contact);
-        //}
-
-        // DELETE (GET)
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        public async Task<IActionResult> EditImage(int? id, IFormFile? file)
         {
-            if (id == null) return NotFound();
-
-            var contact = await _context.Contacts.Include(c => c.Picture).FirstOrDefaultAsync(c => c.Id == id);
-            if (contact == null) return NotFound();
-
-            return View(contact);
-        }
-
-        // DELETE (POST)
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var contact = await _context.Contacts.FindAsync(id);
-            if (contact == null) return NotFound();
-            _context.Contacts.Remove(contact);
-
-            var contactPicture = await _context.ContactPictures.FirstOrDefaultAsync(p => p.ContactId == id);
-            if (contactPicture != null)
+            if (id.HasValue && file != null)
             {
-                _context.ContactPictures.Remove(contactPicture);
+                try
+                {
+                    await _service.UpdatePictureAsync(id.Value, file);
+                    return RedirectToAction(nameof(Edit), new { id = id });
+                }
+                catch {
+                    return NotFound();
+                }
             }
+            return NotFound();
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
     }
 }

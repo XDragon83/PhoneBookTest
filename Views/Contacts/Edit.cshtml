@@ -41,14 +41,19 @@
 
 @if (Model.Picture != null)
 {
+    string base64Image;
+    string mimeType = Model.Picture.ContentType; // example: "image/jpeg"
+    string base64 = Convert.ToBase64String(Model.Picture.ImageData);
+    base64Image = $"data:{mimeType};base64,{base64}";
+
     <div style="margin-bottom:10px;">
-        <img src="/Contacts/GetImage/@Model.Id"
+        <img src=@base64Image
              style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;" />
     </div>
 
     <!-- Separate form to delete picture -->
     <form asp-action="DeleteImage" asp-controller="Contacts" method="post">
-        <input type="hidden" name="contactId" value="@Model.Id" />
+        <input type="hidden" name="id" value="@Model.Id" />
         <button type="submit" class="btn btn-outline-danger">Delete Picture</button>
     </form>
 
@@ -56,7 +61,7 @@
     <br />
     <!-- Separate form to replace existing picture -->
     <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="contactId" value="@Model.Id" />
+        <input type="hidden" name="id" value="@Model.Id" />
         <div class="form-group">
             <label>Replace Picture</label>
             <input type="file" name="file" class="form-control" />
@@ -68,7 +73,7 @@ else
 {
     <!-- No picture: allow upload -->
     <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="contactId" value="@Model.Id" />
+        <input type="hidden" name="id" value="@Model.Id" />
         <div class="form-group">
             <label>Upload Picture</label>
             <input type="file" name="file" class="form-control" />

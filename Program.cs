@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.Data;
+using PhoneBook.Repositories;
+using PhoneBook.Repositories.Interfaces;
+using PhoneBook.Services;
+using PhoneBook.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +13,9 @@ builder.Services.AddControllersWithViews();
 // Add EF Core + SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<IContactService, ContactService>();
 
 var app = builder.Build();
 

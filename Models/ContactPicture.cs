@@ -19,6 +19,7 @@ namespace PhoneBook.Models
         [Required(ErrorMessage = "ImageData is required for a ContactPicture")] // Max size 5MB
         [MaxLength(MaxImageSizeInBytes, ErrorMessage = "Image size is larger than the set size")]
         public required byte[] ImageData { get; set; }
+
         [Required(ErrorMessage = "ThumbnailData isn't generated")]
         public required byte[] ThumbnailData { get; set; }
         // MIME type (image/png, image/jpeg)
