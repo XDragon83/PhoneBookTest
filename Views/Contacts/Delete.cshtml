@@ -2,16 +2,12 @@
 
 @{
     ViewData["Title"] = "Delete";
-    string? base64Image;
-    if (Model.Picture != null && Model.Picture.ImageData != null)
+    string? base64Image = "/images/default_contact.png";
+    if (Model.Picture != null && Model.Picture.ThumbnailData != null)
     {
-        string mimeType = Model.Picture.ContentType; // example: "image/jpeg"
-        string base64 = Convert.ToBase64String(Model.Picture.ImageData);
+        string mimeType = "image/jpeg";
+        string base64 = Convert.ToBase64String(Model.Picture.ThumbnailData);
         base64Image = $"data:{mimeType};base64,{base64}";
-    }
-    else
-    {
-        base64Image = "/images/default_contact.png";
     }
 }
 
@@ -23,15 +19,9 @@
     <hr />
 
     <div class="mb-3">
-        @if (Model.Picture != null)
-        {
-            <img src=@base64Image
-                 style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;" />
-        }
-        else
-        {
-            <p><i>No picture uploaded</i></p>
-        }
+        <img src=@base64Image
+             style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;" />
+
     </div>
 
     <dl class="row">
@@ -67,6 +57,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" />
-        <a class="btn btn-info" asp-action="Index">Back to List</a>
+        <a class="btn btn-info" href="@ViewBag.ReturnUrl">Back to List</a>
     </form>
 </div>

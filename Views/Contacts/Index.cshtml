@@ -1,49 +1,59 @@
 ﻿@model IEnumerable<PhoneBook.Models.Contact>
 
-<h2>Phonebook</h2>
+@{
+    ViewData["Title"] = "Phonebook";
+}
 
-<a class="btn btn-primary" href="/Contacts/Create">Add New Contact</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Phonebook</h2>
 
-<table class="table table-bordered table-striped mt-3">
-    <tr>
-        <th>Picture</th>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Email</th>
-        <th>Birthday</th>
-        <th></th>
-    </tr>
+    <div>
+        <a class="btn btn-success me-2" asp-action="Gallery">Gallery View</a>
+        <a class="btn btn-primary" asp-action="Create">Add New Contact</a>
+    </div>
+</div>
 
-    @foreach (var item in Model)
-    {
-    
-        string base64Image;
-
-        if (item.Picture != null && item.Picture.ImageData != null)
-        {
-            string mimeType = item.Picture.ContentType; // example: "image/jpeg"
-            string base64 = Convert.ToBase64String(item.Picture.ImageData);
-            base64Image = $"data:{mimeType};base64,{base64}";
-        }
-        else
-        {
-            base64Image = "/images/default_contact.png";
-        }
-
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
         <tr>
-            <td>
-                <img src= @base64Image
-                     style="width:60px; height:60px; object-fit:cover; border-radius:5px;" />
-            </td>
-            <td>@item.Name</td>
-            <td>@item.Phone</td>
-            <td>@item.Email</td>
-            <td>@item.Birthday?.ToShortDateString()</td>
-            <td>
-                <a class="btn btn-secondary" href="/Contacts/Edit/@item.Id">Edit</a>
-                <a class="btn btn-info" href="/Contacts/Details/@item.Id">Details</a>
-                <a class="btn btn-outline-danger" href="/Contacts/Delete/@item.Id">Delete</a>
-            </td>
+            <th>Picture</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Birthday</th>
+            <th style="width:200px;"></th>
         </tr>
-    }
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            string src = "/images/default_contact.png";
+
+            if (item.Picture?.ThumbnailData != null)
+            {
+                string base64 = Convert.ToBase64String(item.Picture.ThumbnailData);
+                src = $"data:{item.Picture.ContentType};base64,{base64}";
+            }
+
+            <tr>
+                <td>
+                    <img src="@src"
+                         class="rounded border"
+                         style="width:60px; height:60px; object-fit:cover;" />
+                </td>
+
+                <td>@item.Name</td>
+                <td>@item.Phone</td>
+                <td>@item.Email</td>
+                <td>@item.Birthday?.ToShortDateString()</td>
+
+                <td>
+                    <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">Edit</a>
+                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">Details</a>
+                    <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>

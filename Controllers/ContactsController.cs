@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PhoneBook.Data;
 using PhoneBook.Models;
 using PhoneBook.Services.Interfaces;
+using System.Net.Http.Headers;
 
 namespace PhoneBook.Controllers
 {
@@ -22,13 +23,22 @@ namespace PhoneBook.Controllers
         {
             return View(await _service.GetAllAsync());
         }
+
+        public async Task<IActionResult> Gallery()
+        {
+            return View(await _service.GetAllAsync());
+        }
+
+
+
         // DETAILS
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string? returnUrl)
         {
             if (!id.HasValue)
                 return NotFound();
 
             var contact = await _service.GetByIdAsync(id.Value);
+            ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
 
             if (contact == null)
                 return NotFound();
@@ -38,14 +48,15 @@ namespace PhoneBook.Controllers
 
         // CREATE (GET)
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string? returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
             return View();
         }
 
         // CREATE (POST)
         [HttpPost]
-        public async Task<IActionResult> Create(Contact contact, IFormFile? file)
+        public async Task<IActionResult> Create(Contact contact, IFormFile? file, string? returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -53,17 +64,19 @@ namespace PhoneBook.Controllers
             }
 
             await _service.CreateAsync(contact, file);
+            ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
 
             return RedirectToAction(nameof(Index));
         }
 
         // DELETE (GET)
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string? returnUrl)
         {
             if (!id.HasValue) return NotFound();
 
             Contact? contact = await _service.GetByIdAsync(id.Value);
+            ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
 
             if (contact == null) return NotFound();
 
@@ -82,11 +95,12 @@ namespace PhoneBook.Controllers
 
         // EDIT (GET)
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string? returnUrl)
         {
             if (id.HasValue)
             {
                 Contact? contact = await _service.GetByIdAsync(id.Value);
+                ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
                 if (contact != null)
                 {
                     return View(contact);
@@ -126,7 +140,8 @@ namespace PhoneBook.Controllers
                     await _service.UpdatePictureAsync(id.Value, file);
                     return RedirectToAction(nameof(Edit), new { id = id });
                 }
-                catch {
+                catch
+                {
                     return NotFound();
                 }
             }
