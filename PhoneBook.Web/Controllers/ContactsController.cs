@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.Domain.Models;
@@ -28,7 +29,18 @@ namespace PhoneBook.Controllers
             return View(await _service.GetAllAsync());
         }
 
+        // Set Language
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = System.DateTimeOffset.UtcNow.AddMinutes(2) }
+            );
 
+            return LocalRedirect(returnUrl);
+        }
 
         // DETAILS
         public async Task<IActionResult> Details(int? id, string? returnUrl)
@@ -63,9 +75,8 @@ namespace PhoneBook.Controllers
             }
 
             await _service.CreateAsync(contact, file);
-            ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
 
-            return RedirectToAction(nameof(Index));
+            return LocalRedirect(returnUrl != null ? returnUrl : "/");
         }
 
         // DELETE (GET)

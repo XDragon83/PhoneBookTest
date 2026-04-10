@@ -117,43 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddContactButton" xml:space="preserve">
-    <value>افزودن مخاطب جدید</value>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Back</value>
   </data>
-  <data name="ButtonDelete" xml:space="preserve">
-    <value>حذف</value>
+  <data name="ButtonDeletePicture" xml:space="preserve">
+    <value>Delete Picture</value>
   </data>
-  <data name="ButtonDetails" xml:space="preserve">
-    <value>جزئیات</value>
+  <data name="ButtonReplacePicture" xml:space="preserve">
+    <value>Replace Picture</value>
   </data>
-  <data name="ButtonEdit" xml:space="preserve">
-    <value>ویرایش</value>
+  <data name="ButtonUploadPicture" xml:space="preserve">
+    <value>Upload Picture</value>
   </data>
-  <data name="GalleryViewButton" xml:space="preserve">
-    <value>نمای گالری</value>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="HeadingEdit" xml:space="preserve">
+    <value>Edit Contact</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>دفترچه تلفن</value>
-  </data>
-  <data name="PhonebookHeading" xml:space="preserve">
-    <value>دفترچه تلفن</value>
-  </data>
-  <data name="PhonebookTitle" xml:space="preserve">
-    <value>دفترچه تلفن</value>
+    <value>Edit Contact</value>
   </data>
   <data name="TableHeaderBirthday" xml:space="preserve">
-    <value>تاریخ تولد</value>
+    <value>Birthday</value>
   </data>
   <data name="TableHeaderEmail" xml:space="preserve">
-    <value>ایمیل</value>
+    <value>Email</value>
   </data>
   <data name="TableHeaderName" xml:space="preserve">
-    <value>نام</value>
+    <value>Name</value>
   </data>
   <data name="TableHeaderPhone" xml:space="preserve">
-    <value>&#x8;تلفن</value>
+    <value>Phone</value>
   </data>
   <data name="TableHeaderPicture" xml:space="preserve">
-    <value>تصویر</value>
+    <value>Picture</value>
   </data>
 </root>

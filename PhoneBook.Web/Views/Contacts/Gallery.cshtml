@@ -1,15 +1,17 @@
 ﻿@model IEnumerable<PhoneBook.Domain.Models.Contact>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Gallery";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Gallery</h2>
 
     <div>
-        <a class="btn btn-success me-2" asp-action="Index">List View</a>
-        <a class="btn btn-primary" asp-action="Create" asp-route-returnUrl="@Url.Action("Gallery")">Add New Contact</a>
+        <a class="btn btn-success me-2" asp-action="Index">@Localizer["ListViewButton"]</a>
+        <a class="btn btn-primary" asp-action="Create" asp-route-returnUrl="@Url.Action("Gallery")">@Localizer["AddContactButton"]</a>
     </div>
 </div>
 

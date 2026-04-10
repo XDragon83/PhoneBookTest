@@ -1,7 +1,9 @@
 ﻿@model PhoneBook.Domain.Models.Contact
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @Localizer["PageTitle"];
 
     string fullImageSrc = "/images/default_contact.png";
 
@@ -13,34 +15,34 @@
     }
 }
 
-<h2 class="mb-4">Contact Details</h2>
+<h2 class="mb-4">@Localizer["HeadingContact"]</h2>
 
 <div class="row mb-4">
     <div class="col-md-4">
         <img src="@fullImageSrc"
              class="img-fluid rounded border"
              style="max-height:350px; object-fit:cover;"
-             alt="Contact picture" />
+             alt=@Localizer["AltPicture"] />
     </div>
 
     <div class="col-md-8">
         <dl class="row">
-            <dt class="col-sm-3">Name</dt>
+            <dt class="col-sm-3">@Localizer["TableHeaderName"]</dt>
             <dd class="col-sm-9">@Model.Name</dd>
 
-            <dt class="col-sm-3">Phone</dt>
+            <dt class="col-sm-3">@Localizer["TableHeaderPhone"]</dt>
             <dd class="col-sm-9">@Model.Phone</dd>
 
-            <dt class="col-sm-3">Email</dt>
+            <dt class="col-sm-3">@Localizer["TableHeaderEmail"]</dt>
             <dd class="col-sm-9">@Model.Email</dd>
 
-            <dt class="col-sm-3">Birthday</dt>
-            <dd class="col-sm-9">@Model.Birthday</dd>
+            <dt class="col-sm-3">@Localizer["TableHeaderBirthday"]</dt>
+            <dd class="col-sm-9">@Model.Birthday?.ToShortDateString()</dd>
         </dl>
 
         <div class="mt-3">
-            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnUrl="@Url.Action("Details")" asp-route-returnId="@Model.Id">Edit</a>
-            <a class="btn btn-info" href="@ViewBag.ReturnUrl">Back to List</a>
+            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnUrl="@Url.Action("Details")" asp-route-returnId="@Model.Id">@Localizer["ButtonEdit"]</a>
+            <a class="btn btn-info" href="@ViewBag.ReturnUrl">@Localizer["ButtonBack"]</a>
         </div>
     </div>
 </div>

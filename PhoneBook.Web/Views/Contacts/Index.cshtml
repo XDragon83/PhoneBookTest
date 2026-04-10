@@ -1,0 +1,61 @@
+﻿@model IEnumerable<PhoneBook.Domain.Models.Contact>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">@Localizer["PhonebookHeading"]</h2>
+
+    <div>
+        <a class="btn btn-success me-2" asp-action="Gallery">@Localizer["GalleryViewButton"]</a>
+        <a class="btn btn-primary" asp-action="Create">@Localizer["AddContactButton"]</a>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>@Localizer["TableHeaderPicture"]</th>
+            <th>@Localizer["TableHeaderName"]</th>
+            <th>@Localizer["TableHeaderPhone"]</th>
+            <th>@Localizer["TableHeaderEmail"]</th>
+            <th>@Localizer["TableHeaderBirthday"]</th>
+            <th style="width:200px;"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+                string src = "/images/default_contact.png";
+
+                if (item.Picture?.ThumbnailData != null)
+                {
+                        string base64 = Convert.ToBase64String(item.Picture.ThumbnailData);
+                        src = $"data:{item.Picture.ContentType};base64,{base64}";
+                }
+
+                <tr>
+                    <td>
+                        <img src="@src"
+                             class="rounded border"
+                             style="width:60px; height:60px; object-fit:cover;" />
+                    </td>
+
+                    <td>@item.Name</td>
+                    <td>@item.Phone</td>
+                    <td>@item.Email</td>
+                    <td>@item.Birthday?.ToShortDateString()</td>
+
+                    <td>
+                        <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">@Localizer["ButtonEdit"]</a>
+                        <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">@Localizer["ButtonDetails"]</a>
+                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">@Localizer["ButtonDelete"]</a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>

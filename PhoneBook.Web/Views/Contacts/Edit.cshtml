@@ -1,43 +1,45 @@
 ﻿@model PhoneBook.Domain.Models.Contact
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit Contact";
+    ViewData["Title"] = @Localizer["PageTitle"];
 }
 
-<h2>Edit Contact</h2>
+<h2>@Localizer["HeadingEdit"]</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
 
     <div class="form-group">
-        <label asp-for="Name"></label>
+        <label asp-for="Name">@Localizer["TableHeaderName"]</label>
         <input asp-for="Name" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label asp-for="Phone"></label>
+        <label asp-for="Phone">@Localizer["TableHeaderPhone"]</label>
         <input asp-for="Phone" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label asp-for="Email"></label>
+        <label asp-for="Email">@Localizer["TableHeaderEmail"]</label>
         <input asp-for="Email" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label asp-for="Birthday"></label>
+        <label asp-for="Birthday">@Localizer["TableHeaderBirthday"]</label>
         <input asp-for="Birthday" type="date" class="form-control" />
     </div>
 
     <br />
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a href="@ViewBag.ReturnUrl" class="btn btn-secondary">Back</a>
+    <button type="submit" class="btn btn-primary">@Localizer["ButtonSave"]</button>
+    <a href="@ViewBag.ReturnUrl" class="btn btn-secondary">@Localizer["ButtonBack"]</a>
 </form>
 
 <hr />
 
-<h4>Picture</h4>
+<h4>@Localizer["TableHeaderPicture"]</h4>
 
 @if (Model.Picture != null)
 {
@@ -54,7 +56,7 @@
     <!-- Separate form to delete picture -->
     <form asp-action="DeleteImage" asp-controller="Contacts" method="post">
         <input type="hidden" name="id" value="@Model.Id" />
-        <button type="submit" class="btn btn-outline-danger">Delete Picture</button>
+        <button type="submit" class="btn btn-outline-danger">@Localizer["ButtonDeletePicture"]</button>
     </form>
 
     <br />
@@ -63,10 +65,10 @@
     <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="@Model.Id" />
         <div class="form-group">
-            <label>Replace Picture</label>
+            <label>@Localizer["ButtonReplacePicture"]</label>
             <input type="file" name="file" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary">Upload/Replace Picture</button>
+        <button type="submit" class="btn btn-primary">@Localizer["ButtonReplacePicture"]</button>
     </form>
 }
 else
@@ -75,10 +77,10 @@ else
     <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="@Model.Id" />
         <div class="form-group">
-            <label>Upload Picture</label>
+            <label>@Localizer["ButtonUploadPicture"]</label>
             <input type="file" name="file" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary">Upload Picture</button>
+        <button type="submit" class="btn btn-primary">@Localizer["ButtonUploadPicture"]</button>
     </form>
 }
 

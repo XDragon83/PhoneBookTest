@@ -117,29 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddContactButton" xml:space="preserve">
-    <value>Add New Contact</value>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Back</value>
   </data>
-  <data name="ButtonDelete" xml:space="preserve">
-    <value>Delete</value>
+  <data name="ButtonDeletePicture" xml:space="preserve">
+    <value>Delete Picture</value>
   </data>
-  <data name="ButtonDetails" xml:space="preserve">
-    <value>Details</value>
+  <data name="ButtonReplacePicture" xml:space="preserve">
+    <value>Replace Picture</value>
   </data>
-  <data name="ButtonEdit" xml:space="preserve">
-    <value>Edit</value>
+  <data name="ButtonUploadPicture" xml:space="preserve">
+    <value>Upload Picture</value>
   </data>
-  <data name="GalleryViewButton" xml:space="preserve">
-    <value>Gallery View</value>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="HeadingEdit" xml:space="preserve">
+    <value>Edit Contact</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>Phonebook</value>
-  </data>
-  <data name="PhonebookHeading" xml:space="preserve">
-    <value>Phonebook</value>
-  </data>
-  <data name="PhonebookTitle" xml:space="preserve">
-    <value>Phonebook</value>
+    <value>Edit Contact</value>
   </data>
   <data name="TableHeaderBirthday" xml:space="preserve">
     <value>Birthday</value>

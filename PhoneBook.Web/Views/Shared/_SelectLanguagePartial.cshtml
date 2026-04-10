@@ -1,0 +1,54 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Localization
+@using System.Globalization
+@using Microsoft.Extensions.Options
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions // Corrected injection
+
+@{
+    // Accessing current culture using IRequestCultureFeature
+    var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
+    var cultureInfo = requestCultureFeature?.RequestCulture.Culture;
+
+    // Assuming you have culture names defined in your resource files with a "Culture_" prefix
+    // You might need to adjust the logic here if your resource naming is different.
+    var cultureItems = Localizer.GetAllStrings(true)
+        .Where(x => x.Name.StartsWith("Culture_"))
+        .Select(x => new { Name = x.Name.Substring("Culture_".Length), Value = x.Value })
+        .ToList();
+
+    var returnUrl = Context.Request.Path + Context.Request.QueryString.ToUriComponent();
+}
+
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        @(cultureInfo?.NativeName ?? "Language")
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+        @foreach (var item in cultureItems)
+        {
+            <li>
+                <form method="post" asp-controller="Contacts" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl">
+                    <input type="hidden" name="culture" value="@item.Name" />
+                    <button type="submit" class="dropdown-item">@item.Value</button>
+                </form>
+            </li>
+        }
+        @* You can still include hardcoded options if needed *@
+        @*
+        <li>
+            <form method="post" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl">
+                <input type="hidden" name="culture" value="en-US" />
+                <button type="submit" class="dropdown-item">English</button>
+            </form>
+        </li>
+        <li>
+            <form method="post" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl">
+                <input type="hidden" name="culture" value="fa" />
+                <button type="submit" class="dropdown-item">فارسی</button>
+            </form>
+        </li>
+        *@
+    </ul>
+</div>
