@@ -1,4 +1,4 @@
-﻿@model PhoneBook.Domain.Models.Contact
+﻿@model PhoneBook.Services.DTOs.Contact.ContactDetailsDto
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -7,11 +7,10 @@
 
     string fullImageSrc = "/images/default_contact.png";
 
-    if (Model.Picture?.ImageData != null)
+    if (Model.PictureBase64 != null)
     {
-        string mime = Model.Picture.ContentType;
-        string base64 = Convert.ToBase64String(Model.Picture.ImageData);
-        fullImageSrc = $"data:{mime};base64,{base64}";
+        string mime = Model.PictureMimeType != null ? Model.PictureMimeType : "image/jpeg";
+        fullImageSrc = $"data:{mime};base64,{Model.PictureBase64}";
     }
 }
 

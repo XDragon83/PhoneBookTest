@@ -1,4 +1,5 @@
 ﻿using PhoneBook.Domain.Models;
+using PhoneBook.Services.DTOs.Contact;
 using PhoneBook.Repositories.Interfaces;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -16,36 +17,75 @@ namespace PhoneBook.Services
             _repo = repo;
         }
 
-        public async Task<IEnumerable<Contact>> GetAllAsync()
+        public async Task<IEnumerable<ContactMinimalDto>> GetAllAsync()
         {
-            return await _repo.GetAllAsync();
+            IEnumerable<Contact> contacts = await _repo.GetAllAsync();
+            List<ContactMinimalDto> contactDtos = new List<ContactMinimalDto>();
+            ContactMinimalDto? temp = null;
+            foreach (Contact contact in contacts)
+            {
+                temp = new ContactMinimalDto()
+                {
+                    Id = contact.Id,
+                    Name = contact.Name,
+                    Phone = contact.Phone,
+                    Birthday = contact.Birthday,
+                    Email = contact.Email,
+                    ThumbnailBase64 = contact.Picture != null ?
+                    Convert.ToBase64String(contact.Picture.ThumbnailData) : null
+                };
+                contactDtos.Add(temp);
+            }
+
+            return contactDtos;
         }
 
-        public async Task<Contact?> GetByIdAsync(int id)
+        public async Task<ContactDetailsDto?> GetByIdAsync(int id)
         {
-            return await _repo.GetByIdAsync(id);
+            Contact? contact = await _repo.GetByIdAsync(id);
+            if (contact != null)
+            {
+                ContactDetailsDto contactDto = new ContactDetailsDto()
+                {
+                    Id = contact.Id,
+                    Name = contact.Name,
+                    Phone = contact.Phone,
+                    Birthday = contact.Birthday,
+                    Email = contact.Email,
+                    PictureBase64 = contact.Picture != null ?
+                        Convert.ToBase64String(contact.Picture.ImageData) : null,
+                    PictureMimeType = contact.Picture != null && contact.Picture.ContentType != null ?
+                        contact.Picture.ContentType : null
+
+                };
+                return contactDto;
+            }
+            return null;
         }
 
-        public async Task CreateAsync(Contact contact, IFormFile? pictureFile)
+        public async Task CreateAsync(ContactCreateDto contact, IFormFile? pictureFile)
         {
+            Contact newContact = new() { Name = contact.Name, Phone = contact.Phone, Email = contact.Email, Birthday = contact.Birthday, };
+
             if (pictureFile != null)
             {
                 var bytes = await ConvertFileToBytesAsync(pictureFile);
                 var thumbnail = GenerateThumbnail(bytes);
-
-                contact.Picture = new ContactPicture
+                ContactPicture contactPicture = new()
                 {
-                    Contact = contact,
+                    Contact = newContact,
                     ImageData = bytes,
                     ThumbnailData = thumbnail,
                     ContentType = pictureFile.ContentType
                 };
+                newContact.Picture = contactPicture;
             }
 
-            await _repo.AddAsync(contact);
+
+            await _repo.AddAsync(newContact);
         }
 
-        public async Task UpdateAsync(Contact contact, IFormFile? pictureFile)
+        public async Task UpdateAsync(ContactEditDto contact)
         {
             var existing = await _repo.GetByIdAsync(contact.Id);
             if (existing == null)
@@ -53,20 +93,8 @@ namespace PhoneBook.Services
 
             existing.Name = contact.Name;
             existing.Phone = contact.Phone;
-
-            if (pictureFile != null)
-            {
-                var bytes = await ConvertFileToBytesAsync(pictureFile);
-                var thumbnail = GenerateThumbnail(bytes);
-
-                existing.Picture = new ContactPicture
-                {
-                    Contact = contact,
-                    ContentType = pictureFile.ContentType,
-                    ImageData = bytes,
-                    ThumbnailData = thumbnail
-                };
-            }
+            existing.Email = contact.Email;
+            existing.Birthday = contact.Birthday;
 
             await _repo.UpdateAsync(existing);
         }

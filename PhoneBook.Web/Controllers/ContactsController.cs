@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.Domain.Models;
+using PhoneBook.Services.DTOs.Contact;
 using PhoneBook.Services.Interfaces;
 using System.Net.Http.Headers;
 
@@ -67,7 +68,7 @@ namespace PhoneBook.Controllers
 
         // CREATE (POST)
         [HttpPost]
-        public async Task<IActionResult> Create(Contact contact, IFormFile? file, string? returnUrl)
+        public async Task<IActionResult> Create(ContactCreateDto contact, IFormFile? file, string? returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -85,7 +86,7 @@ namespace PhoneBook.Controllers
         {
             if (!id.HasValue) return NotFound();
 
-            Contact? contact = await _service.GetByIdAsync(id.Value);
+            var contact = await _service.GetByIdAsync(id.Value);
             ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
 
             if (contact == null) return NotFound();
@@ -109,7 +110,7 @@ namespace PhoneBook.Controllers
         {
             if (id.HasValue)
             {
-                Contact? contact = await _service.GetByIdAsync(id.Value);
+                var contact = await _service.GetByIdAsync(id.Value);
                 ViewBag.ReturnUrl = returnUrl != null ? returnUrl : "/";
                 if (contact != null)
                 {
@@ -131,11 +132,11 @@ namespace PhoneBook.Controllers
 
         // EDIT (POST)
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Contact contact)
+        public async Task<IActionResult> Edit(int id, ContactEditDto contact)
         {
             if (!ModelState.IsValid) return View(contact);
             if (await _service.GetByIdAsync(id) == null || id != contact.Id) return NotFound();
-            await _service.UpdateAsync(contact, null);
+            await _service.UpdateAsync(contact);
 
             return RedirectToAction(nameof(Index));
         }

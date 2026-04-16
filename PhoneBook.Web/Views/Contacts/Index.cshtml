@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PhoneBook.Domain.Models.Contact>
+﻿@model IEnumerable<PhoneBook.Services.DTOs.Contact.ContactMinimalDto>
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -32,10 +32,9 @@
         {
                 string src = "/images/default_contact.png";
 
-                if (item.Picture?.ThumbnailData != null)
+                if (item?.ThumbnailBase64 != null)
                 {
-                        string base64 = Convert.ToBase64String(item.Picture.ThumbnailData);
-                        src = $"data:{item.Picture.ContentType};base64,{base64}";
+                src = $"data: image/jpeg;base64,{item.ThumbnailBase64}";
                 }
 
                 <tr>
