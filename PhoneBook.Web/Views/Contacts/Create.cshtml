@@ -1,4 +1,4 @@
-﻿@model PhoneBook.Services.DTOs.Contact.ContactCreateDto
+﻿@model PhoneBook.Web.ViewModels.Contacts.ContactCreateViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -6,58 +6,95 @@
     ViewData["Title"] = @Localizer["PageTitle"];
 }
 
-<h2>@Localizer["HeadingCreate"]</h2>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h1 class="text-primary mb-2">@Localizer["HeadingCreate"]</h1>
+                <p class="text-muted fs-6">@Localizer["AddContactButton"]</p>
+            </div>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">@Localizer["HeadingContact"]</h5>
+                </div>
 
-    <div class="form-group">
-        <label asp-for="Name" class="form-label">@Localizer["TableHeaderName"]</label>
-        <input asp-for="Name" class="form-control" placeholder=@Localizer["TableHeaderName"] />
-    </div>
-    <br />
+                <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    @Html.AntiForgeryToken()
 
-    <div class="form-group">
-        <label asp-for="Phone" class="form-label">@Localizer["TableHeaderPhone"]</label>
-        <input asp-for="Phone" class="form-control" placeholder=@Localizer["TableHeaderPhone"] />
-    </div>
-    <br />
+                    <div class="card-body">
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">@Localizer["TableHeaderName"]</label>
+                            <input asp-for="Name" class="form-control" placeholder=@Localizer["TableHeaderName"] />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Email" class="form-label">@Localizer["TableHeaderEmail"]</label>
-        <input asp-for="Email" class="form-control" placeholder=@Localizer["TableHeaderEmail"] />
-    </div>
-    <br />
+                        <!-- Phone Field -->
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label">@Localizer["TableHeaderPhone"]</label>
+                            <input asp-for="Phone" class="form-control" placeholder=@Localizer["TableHeaderPhone"] />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Birthday" class="form-label">@Localizer["TableHeaderBirthday"]</label>
-        <input asp-for="Birthday" class="form-control" type="date" />
-    </div>
-    <br />
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">@Localizer["TableHeaderEmail"]</label>
+                            <input asp-for="Email" class="form-control" placeholder=@Localizer["TableHeaderEmail"] />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
 
-    <div class="form-group">
-        <label class="form-label">@Localizer["HeadingPicture"]</label>
+                        <!-- Birthday Field -->
+                        <div class="mb-3">
+                            <label asp-for="Birthday" class="form-label">@Localizer["TableHeaderBirthday"]</label>
+                            <input asp-for="Birthday" class="form-control" type="date" />
+                            <span asp-validation-for="Birthday" class="text-danger"></span>
+                        </div>
 
-        <!-- preview -->
-        <div style="margin-bottom:10px;">
-            <img id="preview" src="~/images/default_contact.png"
-                 style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;"
-                 alt=@Localizer["AltPreview"] />
+                        <hr />
+
+                        <!-- Picture Section -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">@Localizer["HeadingPicture"]</label>
+
+                            <!-- Preview -->
+                            <div class="mb-3 text-center">
+                                <img id="preview" src="~/images/default_contact.png"
+                                     class="rounded border border-2 border-light"
+                                     style="width:200px; height:200px; object-fit:cover; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                                     alt=@Localizer["AltPreview"] />
+                            </div>
+
+                            <!-- File Input -->
+                            <div class="mb-2">
+                                <input type="file" id="fileInput" name="Picture" class="form-control" accept="image/*" />
+                                <small class="form-text text-muted d-block mt-2">@Localizer["TextPicture"]</small>
+                            </div>
+
+                            <!-- Clear Button -->
+                            <button type="button" id="clearFile" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-x-circle"></i> @Localizer["ButtonRemove"]
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Form Footer -->
+                    <div class="card-footer bg-light">
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        <div class="d-flex gap-2 justify-content-between">
+                            <a href="@ViewBag.ReturnUrl" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> @Localizer["ButtonBack"]
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> @Localizer["ButtonSave"]
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <!-- file input (kept as original but improved) -->
-        <input type="file" id="fileInput" name="file" class="form-control" accept="image/*" />
-        <small class="form-text text-muted">@Localizer["TextPicture"]</small>
-
-        <div style="margin-top:8px;">
-            <button type="button" id="clearFile" class="btn btn-outline-secondary btn-sm">@Localizer["ButtonRemove"]</button>
-        </div>
     </div>
-    <br />
-
-    <button type="submit" class="btn btn-success">@Localizer["ButtonSave"]</button>
-    <a href="@ViewBag.ReturnUrl" class="btn btn-secondary">@Localizer["ButtonBack"]</a>
-</form>
+</div>
 
 @section Scripts {
     @{

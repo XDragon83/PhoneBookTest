@@ -1,4 +1,4 @@
-﻿using PhoneBook.Domain.Models;
+﻿using PhoneBook.Domain.Entities;
 
 namespace PhoneBook.Repositories.Interfaces
 {

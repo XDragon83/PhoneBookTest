@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PhoneBook.Services.DTOs.Contact.ContactMinimalDto>
+﻿@model PhoneBook.Web.ViewModels.Contacts.ContactsIndexViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -6,55 +6,162 @@
     ViewData["Title"] = Localizer["PageTitle"];
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">@Localizer["PhonebookHeading"]</h2>
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">@Localizer["PhonebookHeading"]</h1>
+            <p class="text-muted fs-6">@Model.ContactsCount @Localizer["Contact"]</p>
+        </div>
 
-    <div>
-        <a class="btn btn-success me-2" asp-action="Gallery">@Localizer["GalleryViewButton"]</a>
-        <a class="btn btn-primary" asp-action="Create">@Localizer["AddContactButton"]</a>
+        <div class="d-flex gap-2">
+            <a class="btn btn-success" asp-action="Gallery">
+                <i class="bi bi-images"></i> @Localizer["GalleryViewButton"]
+            </a>
+            <a class="btn btn-primary" asp-action="Create" asp-route-returnUrl="@Url.Action("Index")">
+                <i class="bi bi-plus-circle"></i> @Localizer["AddContactButton"]
+            </a>
+        </div>
     </div>
+
+    @if (Model.Contacts.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle">
+                <thead class="table-light sticky-top">
+                    <tr>
+                        <th style="width: 80px;">@Localizer["TableHeaderPicture"]</th>
+                        <th>@Localizer["TableHeaderName"]</th>
+                        <th>@Localizer["TableHeaderPhone"]</th>
+                        <th>@Localizer["TableHeaderEmail"]</th>
+                        <th>@Localizer["TableHeaderBirthday"]</th>
+                        <th style="width: 340px;" class="text-center">@Localizer["Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Contacts)
+                    {
+                        string src = "/images/default_contact.png";
+
+                        if (item?.ThumbnailBase64 != null)
+                        {
+                            src = $"data:image/jpeg;base64,{item.ThumbnailBase64}";
+                        }
+
+                        <tr class="border-bottom">
+                            <td>
+                                <img src="@src"
+                                     class="rounded border"
+                                     style="width:60px; height:60px; object-fit:cover;" 
+                                     alt="@item?.Name" />
+                            </td>
+
+                            <td class="fw-semibold">@item?.Name</td>
+                            <td>
+                                <a href="tel:@item?.Phone" class="text-decoration-none">@item?.Phone</a>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item?.Email))
+                                {
+                                    <a href="mailto:@item.Email" class="text-decoration-none">@item.Email</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item?.Birthday.HasValue == true)
+                                {
+                                    @item.Birthday.Value.ToShortDateString()
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center flex-wrap">
+                                    <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@item?.Id" asp-route-returnUrl="@Url.Action("Index")" title="@Localizer["ButtonDetails"]">
+                                        <i class="bi bi-eye"></i> <span class="ms-1">@Localizer["ButtonDetails"]</span>
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item?.Id" asp-route-returnUrl="@Url.Action("Index")" title="@Localizer["ButtonEdit"]">
+                                        <i class="bi bi-pencil"></i> <span class="ms-1">@Localizer["ButtonEdit"]</span>
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item?.Id" asp-route-returnUrl="@Url.Action("Index")" title="@Localizer["ButtonDelete"]">
+                                        <i class="bi bi-trash"></i> <span class="ms-1">@Localizer["ButtonDelete"]</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-5" role="alert">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">@Localizer["NoContacts"]</h4>
+            <p>@Localizer["AddFirstContact"]</p>
+            <a class="btn btn-primary" asp-action="Create">
+                <i class="bi bi-plus-circle"></i> @Localizer["AddContactButton"]
+            </a>
+        </div>
+    }
 </div>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-light">
-        <tr>
-            <th>@Localizer["TableHeaderPicture"]</th>
-            <th>@Localizer["TableHeaderName"]</th>
-            <th>@Localizer["TableHeaderPhone"]</th>
-            <th>@Localizer["TableHeaderEmail"]</th>
-            <th>@Localizer["TableHeaderBirthday"]</th>
-            <th style="width:200px;"></th>
-        </tr>
-    </thead>
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-                string src = "/images/default_contact.png";
+    .btn-outline-secondary,
+    .btn-outline-primary,
+    .btn-outline-danger {
+        white-space: nowrap;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
 
-                if (item?.ThumbnailBase64 != null)
-                {
-                src = $"data: image/jpeg;base64,{item.ThumbnailBase64}";
-                }
+    .btn-outline-secondary:hover,
+    .btn-outline-primary:hover,
+    .btn-outline-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
 
-                <tr>
-                    <td>
-                        <img src="@src"
-                             class="rounded border"
-                             style="width:60px; height:60px; object-fit:cover;" />
-                    </td>
+    .btn-outline-secondary i,
+    .btn-outline-primary i,
+    .btn-outline-danger i {
+        font-size: 1rem;
+    }
 
-                    <td>@item.Name</td>
-                    <td>@item.Phone</td>
-                    <td>@item.Email</td>
-                    <td>@item.Birthday?.ToShortDateString()</td>
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+</style>
 
-                    <td>
-                        <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">@Localizer["ButtonEdit"]</a>
-                        <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">@Localizer["ButtonDetails"]</a>
-                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id" asp-route-returnUrl="@Url.Action("Index")">@Localizer["ButtonDelete"]</a>
-                    </td>
-                </tr>
+@* Responsive styles for mobile devices *@
+<style>
+    @@media (max-width: 576px) {
+        .btn-sm {
+            padding: 0.35rem 0.6rem;
+            font-size: 0.85rem;
         }
-    </tbody>
-</table>
+
+        .btn-sm span {
+            display: none;
+        }
+
+        .btn-sm i {
+            margin-left: 0 !important;
+        }
+    }
+</style>

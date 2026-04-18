@@ -1,4 +1,4 @@
-﻿@model PhoneBook.Services.DTOs.Contact.ContactDetailsDto
+﻿@model PhoneBook.Web.ViewModels.Contacts.ContactDetailsViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
@@ -7,41 +7,96 @@
 
     string fullImageSrc = "/images/default_contact.png";
 
-    if (Model.PictureBase64 != null)
+    if (Model.Contact.PictureBase64 != null)
     {
-        string mime = Model.PictureMimeType != null ? Model.PictureMimeType : "image/jpeg";
-        fullImageSrc = $"data:{mime};base64,{Model.PictureBase64}";
+        string mime = Model.Contact.PictureMimeType != null ? Model.Contact.PictureMimeType : "image/jpeg";
+        fullImageSrc = $"data:{mime};base64,{Model.Contact.PictureBase64}";
     }
 }
 
-<h2 class="mb-4">@Localizer["HeadingContact"]</h2>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h1 class="text-primary mb-2">@Localizer["HeadingContact"]</h1>
+                <p class="text-muted fs-6">@Html.DisplayFor(model => model.Contact.Phone)</p>
+            </div>
 
-<div class="row mb-4">
-    <div class="col-md-4">
-        <img src="@fullImageSrc"
-             class="img-fluid rounded border"
-             style="max-height:350px; object-fit:cover;"
-             alt=@Localizer["AltPicture"] />
-    </div>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">@Html.DisplayFor(model => model.Contact.Name)</h5>
+                </div>
 
-    <div class="col-md-8">
-        <dl class="row">
-            <dt class="col-sm-3">@Localizer["TableHeaderName"]</dt>
-            <dd class="col-sm-9">@Model.Name</dd>
+                <!-- Full Size Picture -->
+                <div class="card-body text-center">
+                    <img src="@fullImageSrc"
+                         class="img-fluid rounded border border-2"
+                         style="max-height: 500px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
+                         alt=@Localizer["AltPicture"] />
+                </div>
 
-            <dt class="col-sm-3">@Localizer["TableHeaderPhone"]</dt>
-            <dd class="col-sm-9">@Model.Phone</dd>
+                <!-- Contact Information -->
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="text-secondary mb-2">@Localizer["TableHeaderPhone"]</h6>
+                                <p class="fs-5 fw-semibold mb-0">@Html.DisplayFor(model => model.Contact.Phone)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="text-secondary mb-2">@Localizer["TableHeaderEmail"]</h6>
+                                <p class="fs-5 mb-0">
+                                    @if (!string.IsNullOrEmpty(Model.Contact.Email))
+                                    {
+                                        <a href="mailto:@Model.Contact.Email">@Html.DisplayFor(model => model.Contact.Email)</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-            <dt class="col-sm-3">@Localizer["TableHeaderEmail"]</dt>
-            <dd class="col-sm-9">@Model.Email</dd>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="text-secondary mb-2">@Localizer["TableHeaderBirthday"]</h6>
+                                <p class="fs-5 mb-0">
+                                    @if (Model.Contact.Birthday.HasValue)
+                                    {
+                                        @Model.Contact.Birthday.Value.ToShortDateString()
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <dt class="col-sm-3">@Localizer["TableHeaderBirthday"]</dt>
-            <dd class="col-sm-9">@Model.Birthday?.ToShortDateString()</dd>
-        </dl>
-
-        <div class="mt-3">
-            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnUrl="@Url.Action("Details")" asp-route-returnId="@Model.Id">@Localizer["ButtonEdit"]</a>
-            <a class="btn btn-info" href="@ViewBag.ReturnUrl">@Localizer["ButtonBack"]</a>
+                <!-- Actions Footer -->
+                <div class="card-footer bg-light">
+                    <div class="d-flex gap-2 justify-content-between">
+                        <a href="@ViewBag.ReturnUrl" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> @Localizer["ButtonBack"]
+                        </a>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Contact.Id" asp-route-returnUrl="@ViewBag.ReturnUrl">
+                                <i class="bi bi-pencil"></i> @Localizer["ButtonEdit"]
+                            </a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Contact.Id" asp-route-returnUrl="@ViewBag.ReturnUrl">
+                                <i class="bi bi-trash"></i> @Localizer["ButtonDelete"]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

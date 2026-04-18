@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using PhoneBook.Domain.Models;
+using PhoneBook.Domain.Entities;
 
 namespace PhoneBook.Data.Context
 {

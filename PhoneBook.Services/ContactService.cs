@@ -1,10 +1,10 @@
-﻿using PhoneBook.Domain.Models;
-using PhoneBook.Services.DTOs.Contact;
+﻿using PhoneBook.Services.DTOs.Contact;
 using PhoneBook.Repositories.Interfaces;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using PhoneBook.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using PhoneBook.Domain.Entities;
 
 namespace PhoneBook.Services
 {
@@ -20,8 +20,8 @@ namespace PhoneBook.Services
         public async Task<IEnumerable<ContactMinimalDto>> GetAllAsync()
         {
             IEnumerable<Contact> contacts = await _repo.GetAllAsync();
-            List<ContactMinimalDto> contactDtos = new List<ContactMinimalDto>();
-            ContactMinimalDto? temp = null;
+            List<ContactMinimalDto> contactDtos = [];
+            ContactMinimalDto temp;
             foreach (Contact contact in contacts)
             {
                 temp = new ContactMinimalDto()
@@ -32,7 +32,7 @@ namespace PhoneBook.Services
                     Birthday = contact.Birthday,
                     Email = contact.Email,
                     ThumbnailBase64 = contact.Picture != null ?
-                    Convert.ToBase64String(contact.Picture.ThumbnailData) : null
+        Convert.ToBase64String(contact.Picture.ThumbnailData) : null
                 };
                 contactDtos.Add(temp);
             }
@@ -45,7 +45,7 @@ namespace PhoneBook.Services
             Contact? contact = await _repo.GetByIdAsync(id);
             if (contact != null)
             {
-                ContactDetailsDto contactDto = new ContactDetailsDto()
+                ContactDetailsDto contactDto = new()
                 {
                     Id = contact.Id,
                     Name = contact.Name,
@@ -63,20 +63,20 @@ namespace PhoneBook.Services
             return null;
         }
 
-        public async Task CreateAsync(ContactCreateDto contact, IFormFile? pictureFile)
+        public async Task CreateAsync(ContactCreateDto contact)
         {
             Contact newContact = new() { Name = contact.Name, Phone = contact.Phone, Email = contact.Email, Birthday = contact.Birthday, };
 
-            if (pictureFile != null)
+            if (contact.Picture != null)
             {
-                var bytes = await ConvertFileToBytesAsync(pictureFile);
+                var bytes = await ConvertFileToBytesAsync(contact.Picture);
                 var thumbnail = GenerateThumbnail(bytes);
                 ContactPicture contactPicture = new()
                 {
                     Contact = newContact,
                     ImageData = bytes,
                     ThumbnailData = thumbnail,
-                    ContentType = pictureFile.ContentType
+                    ContentType = contact.Picture.ContentType
                 };
                 newContact.Picture = contactPicture;
             }
@@ -143,14 +143,14 @@ namespace PhoneBook.Services
         // Helpers (business logic)
         // -----------------------------
 
-        private async Task<byte[]> ConvertFileToBytesAsync(IFormFile file)
+        private static async Task<byte[]> ConvertFileToBytesAsync(IFormFile file)
         {
             using var ms = new MemoryStream();
             await file.CopyToAsync(ms);
             return ms.ToArray();
         }
 
-        private byte[] GenerateThumbnail(byte[] original)
+        private static byte[] GenerateThumbnail(byte[] original)
         {
             using var image = Image.Load(original);
 

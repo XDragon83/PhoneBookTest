@@ -121,7 +121,7 @@
     <value>بازگشت</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>حذف</value>
+    <value>جزئیات</value>
   </data>
   <data name="TableHeaderBirthday" xml:space="preserve">
     <value>تاریخ تولد</value>
@@ -143,5 +143,8 @@
   </data>
   <data name="ButtonEdit" xml:space="preserve">
     <value>ویرایش</value>
+  </data>
+  <data name="ButtonDelete" xml:space="preserve">
+    <value>حذف</value>
   </data>
 </root>

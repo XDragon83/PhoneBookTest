@@ -1,62 +1,113 @@
-﻿@model PhoneBook.Services.DTOs.Contact.ContactMinimalDto
+﻿@model PhoneBook.Web.ViewModels.Contacts.ContactDeleteViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = @Localizer["PageTitle"];
     string? base64Image = "/images/default_contact.png";
-    if (Model.ThumbnailBase64 != null)
+    if (Model.Contact.PictureBase64 != null)
     {
-        base64Image = $"data:image/jpeg;base64,{Model.ThumbnailBase64}";
+        string mime = Model.Contact.PictureMimeType != null ? Model.Contact.PictureMimeType : "image/jpeg";
+        base64Image = $"data:{mime};base64,{Model.Contact.PictureBase64}";
     }
 }
 
-<h1>@Localizer["HeadingDelete"]</h1>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h1 class="text-danger mb-2">@Localizer["HeadingDelete"]</h1>
+                <p class="text-muted fs-5">@Localizer["HeadingConfirmation"]</p>
+            </div>
 
-<h3>@Localizer["HeadingConfirmation"]</h3>
-<div>
-    <h4>@Localizer["HeadingContact"]</h4>
-    <hr />
+            <!-- Card Container -->
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">@Localizer["HeadingContact"]</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Full Size Picture -->
+                    <div class="mb-4 text-center">
+                        <img src=@base64Image
+                             alt="@Model.Contact.Name"
+                             class="img-fluid rounded border border-danger"
+                             style="max-height: 500px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                    </div>
 
-    <div class="mb-3">
-        <img src=@base64Image
-             style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;" />
+                    <!-- Contact Information -->
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="text-secondary mb-2">@Localizer["TableHeaderName"]</h6>
+                                <p class="fs-5 fw-semibold mb-0">@Html.DisplayFor(model => model.Contact.Name)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="text-secondary mb-2">@Localizer["TableHeaderPhone"]</h6>
+                                <p class="fs-5 fw-semibold mb-0">@Html.DisplayFor(model => model.Contact.Phone)</p>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="text-secondary mb-2">@Localizer["TableHeaderEmail"]</h6>
+                                <p class="fs-5 mb-0">
+                                    @if (!string.IsNullOrEmpty(Model.Contact.Email))
+                                    {
+                                        <a href="mailto:@Model.Contact.Email">@Html.DisplayFor(model => model.Contact.Email)</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <h6 class="text-secondary mb-2">@Localizer["TableHeaderBirthday"]</h6>
+                                <p class="fs-5 mb-0">
+                                    @if (Model.Contact.Birthday.HasValue)
+                                    {
+                                        @Model.Contact.Birthday.Value.ToShortDateString()
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Footer -->
+                <div class="card-footer bg-light">
+                    <div class="d-flex gap-2 justify-content-between align-items-center">
+                        <a href="@ViewBag.ReturnUrl" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> @Localizer["ButtonBack"]
+                        </a>
+                        <form asp-action="Delete" method="post" class="d-inline">
+                            <input type="hidden" asp-for="Contact.Id" />
+                            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('@Localizer["ConfirmDelete"]')">
+                                <i class="bi bi-trash"></i> @Localizer["ButtonDelete"]
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Info (Optional) -->
+        <div class="col-lg-4">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h5 class="alert-heading mb-2">⚠️ @Localizer["Warning"]</h5>
+                <p class="mb-0">@Localizer["DeleteWarning"]</p>
+            </div>
+        </div>
     </div>
-
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Localizer["TableHeaderName"]
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Localizer["TableHeaderPhone"]
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Localizer["TableHeaderEmail"]
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Localizer["TableHeaderBirthday"]
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Birthday)
-        </dd>
-    </dl>
-
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value=@Localizer["ButtonDelete"] class="btn btn-danger" />
-        <a class="btn btn-info" href="@ViewBag.ReturnUrl">@Localizer["ButtonBack"]</a>
-    </form>
 </div>

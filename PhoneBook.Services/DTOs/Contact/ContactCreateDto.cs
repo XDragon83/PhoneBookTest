@@ -12,6 +12,6 @@ namespace PhoneBook.Services.DTOs.Contact
         [EmailAddress]
         public string? Email { get; set; }
         public DateTime? Birthday { get; set; }
-        public IFormFile? picture {  get; set; }
+        public IFormFile? Picture {  get; set; }
     }
 }

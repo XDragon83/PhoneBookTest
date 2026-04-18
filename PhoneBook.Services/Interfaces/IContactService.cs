@@ -1,5 +1,4 @@
-﻿using PhoneBook.Domain.Models;
-using PhoneBook.Services.DTOs.Contact;
+﻿using PhoneBook.Services.DTOs.Contact;
 using Microsoft.AspNetCore.Http;
 
 namespace PhoneBook.Services.Interfaces
@@ -8,7 +7,7 @@ namespace PhoneBook.Services.Interfaces
     {
         Task<IEnumerable<ContactMinimalDto>> GetAllAsync();
         Task<ContactDetailsDto?> GetByIdAsync(int id);
-        Task CreateAsync(ContactCreateDto contact, IFormFile? pictureFile);
+        Task CreateAsync(ContactCreateDto contact);
         Task UpdateAsync(ContactEditDto contact);
         Task DeleteAsync(int id);
 

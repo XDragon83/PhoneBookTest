@@ -1,85 +1,133 @@
-﻿@model PhoneBook.Services.DTOs.Contact.ContactDetailsDto
+﻿@model PhoneBook.Web.ViewModels.Contacts.ContactEditViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = @Localizer["PageTitle"];
+    string pictureDisplay = Model.PictureBase64 != null ? $"data:image/jpeg;base64,{Model.PictureBase64}" : "/images/default_contact.png";
 }
 
-<h2>@Localizer["HeadingEdit"]</h2>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h1 class="text-primary mb-2">@Localizer["HeadingEdit"]</h1>
+                <p class="text-muted fs-6">@Html.DisplayFor(model => model.Name)</p>
+            </div>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">@Localizer["HeadingContact"]</h5>
+                </div>
 
-    <div class="form-group">
-        <label asp-for="Name">@Localizer["TableHeaderName"]</label>
-        <input asp-for="Name" class="form-control" />
-    </div>
+                <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ReturnUrl" />
 
-    <div class="form-group">
-        <label asp-for="Phone">@Localizer["TableHeaderPhone"]</label>
-        <input asp-for="Phone" class="form-control" />
-    </div>
+                    <div class="card-body">
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">@Localizer["TableHeaderName"]</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Email">@Localizer["TableHeaderEmail"]</label>
-        <input asp-for="Email" class="form-control" />
-    </div>
+                        <!-- Phone Field -->
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label">@Localizer["TableHeaderPhone"]</label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Birthday">@Localizer["TableHeaderBirthday"]</label>
-        <input asp-for="Birthday" type="date" class="form-control" />
-    </div>
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">@Localizer["TableHeaderEmail"]</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
 
-    <br />
+                        <!-- Birthday Field -->
+                        <div class="mb-3">
+                            <label asp-for="Birthday" class="form-label">@Localizer["TableHeaderBirthday"]</label>
+                            <input asp-for="Birthday" type="date" class="form-control" />
+                            <span asp-validation-for="Birthday" class="text-danger"></span>
+                        </div>
+                    </div>
 
-    <button type="submit" class="btn btn-primary">@Localizer["ButtonSave"]</button>
-    <a href="@ViewBag.ReturnUrl" class="btn btn-secondary">@Localizer["ButtonBack"]</a>
-</form>
+                    <!-- Form Footer -->
+                    <div class="card-footer bg-light">
+                        <div class="d-flex gap-2 justify-content-between">
+                            <a href="@ViewBag.ReturnUrl" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> @Localizer["ButtonBack"]
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> @Localizer["ButtonSave"]
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
-<hr />
+            <!-- Picture Management Card -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">@Localizer["TableHeaderPicture"]</h5>
+                </div>
 
-<h4>@Localizer["TableHeaderPicture"]</h4>
+                <div class="card-body">
+                    <!-- Current Picture Display -->
+                    <div class="mb-4 text-center">
+                        <img src="@pictureDisplay"
+                             alt="@Model.Name"
+                             class="img-fluid rounded border border-2"
+                             style="max-height: 350px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+                    </div>
 
-@if (Model.PictureBase64 != null)
-{
-    string base64Image = $"data:image/jpeg;base64,{Model.PictureBase64}";
+                    @if (Model.PictureBase64 != null)
+                    {
+                        <!-- Delete Picture Form -->
+                        <form asp-action="DeleteImage" asp-controller="Contacts" method="post" class="mb-3">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-outline-danger w-100 mb-2" onclick="return confirm('@Localizer["ConfirmDelete"]')">
+                                <i class="bi bi-trash"></i> @Localizer["ButtonDeletePicture"]
+                            </button>
+                        </form>
+                    }
 
-    <div style="margin-bottom:10px;">
-        <img src=@base64Image
-             style="width:150px; height:150px; object-fit:cover; border-radius:8px; border:1px solid #ccc;" />
-    </div>
-
-    <!-- Separate form to delete picture -->
-    <form asp-action="DeleteImage" asp-controller="Contacts" method="post">
-        <input type="hidden" name="id" value="@Model.Id" />
-        <button type="submit" class="btn btn-outline-danger">@Localizer["ButtonDeletePicture"]</button>
-    </form>
-
-    <br />
-    <br />
-    <!-- Separate form to replace existing picture -->
-    <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="@Model.Id" />
-        <div class="form-group">
-            <label>@Localizer["ButtonReplacePicture"]</label>
-            <input type="file" name="file" class="form-control" />
+                    <!-- Replace/Upload Picture Form -->
+                    <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="mb-3">
+                            <label class="form-label">
+                                @if (Model.PictureBase64 != null)
+                                {
+                                    @Localizer["ButtonReplacePicture"]
+                                }
+                                else
+                                {
+                                    @Localizer["ButtonUploadPicture"]
+                                }
+                            </label>
+                            <input type="file" name="file" class="form-control" accept="image/*" />
+                            <small class="form-text text-muted d-block mt-2">@Localizer["TextPicture"]</small>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            @if (Model.PictureBase64 != null)
+                            {
+                                @Localizer["ButtonReplacePicture"]
+                            }
+                            else
+                            {
+                                @Localizer["ButtonUploadPicture"]
+                            }
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">@Localizer["ButtonReplacePicture"]</button>
-    </form>
-}
-else
-{
-    <!-- No picture: allow upload -->
-    <form asp-action="EditImage" asp-controller="Contacts" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="@Model.Id" />
-        <div class="form-group">
-            <label>@Localizer["ButtonUploadPicture"]</label>
-            <input type="file" name="file" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary">@Localizer["ButtonUploadPicture"]</button>
-    </form>
-}
+    </div>
+</div>
 
 @section Scripts {
     @{

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PhoneBook.Data.Context;
-using PhoneBook.Domain.Models;
+using PhoneBook.Domain.Entities;
 using PhoneBook.Repositories.Interfaces;
 
 namespace PhoneBook.Repositories

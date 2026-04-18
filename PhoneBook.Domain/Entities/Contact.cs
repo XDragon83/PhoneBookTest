@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace PhoneBook.Domain.Models
+namespace PhoneBook.Domain.Entities
 {
     public class Contact
     {

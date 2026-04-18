@@ -121,7 +121,7 @@
     <value>Back</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>Delete</value>
+    <value>Details</value>
   </data>
   <data name="TableHeaderBirthday" xml:space="preserve">
     <value>Birthday</value>
@@ -143,5 +143,8 @@
   </data>
   <data name="ButtonEdit" xml:space="preserve">
     <value>Edit</value>
+  </data>
+  <data name="ButtonDelete" xml:space="preserve">
+    <value>Delete</value>
   </data>
 </root>
