@@ -1,5 +1,5 @@
 ﻿using PhoneBook.Services.DTOs.Contact;
-using PhoneBook.Repositories.Interfaces;
+using PhoneBook.DataAccess.Interfaces;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using PhoneBook.Services.Interfaces;

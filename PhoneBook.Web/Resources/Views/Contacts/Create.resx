@@ -156,4 +156,7 @@
   <data name="TextPicture" xml:space="preserve">
     <value>Allowed: image files. Recommended: square JPG/PNG, max ~2MB.</value>
   </data>
+  <data name="HeadingContact" xml:space="preserve">
+    <value>Contact Information</value>
+  </data>
 </root>

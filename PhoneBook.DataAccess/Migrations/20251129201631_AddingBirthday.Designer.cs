@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PhoneBook.Data.Context;
+using PhoneBook.DataAccess.Context;
 
 
 #nullable disable
@@ -13,8 +13,8 @@ using PhoneBook.Data.Context;
 namespace PhoneBook.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251130202350_AddingPictures")]
-    partial class AddingPictures
+    [Migration("20251129201631_AddingBirthday")]
+    partial class AddingBirthday
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,31 +25,6 @@ namespace PhoneBook.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("PhoneBook.Models.ContactPicture", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ContactId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ContentType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("ImageData")
-                        .HasColumnType("varbinary(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContactId")
-                        .IsUnique();
-
-                    b.ToTable("ContactPictures");
-                });
 
             modelBuilder.Entity("Phonebook.Models.Contact", b =>
                 {
@@ -79,22 +54,6 @@ namespace PhoneBook.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Contacts");
-                });
-
-            modelBuilder.Entity("PhoneBook.Models.ContactPicture", b =>
-                {
-                    b.HasOne("Phonebook.Models.Contact", "Contact")
-                        .WithOne("Picture")
-                        .HasForeignKey("PhoneBook.Models.ContactPicture", "ContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Contact");
-                });
-
-            modelBuilder.Entity("Phonebook.Models.Contact", b =>
-                {
-                    b.Navigation("Picture");
                 });
 #pragma warning restore 612, 618
         }

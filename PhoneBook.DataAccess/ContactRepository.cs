@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PhoneBook.Data.Context;
+using PhoneBook.DataAccess.Context;
+using PhoneBook.DataAccess.Interfaces;
 using PhoneBook.Domain.Entities;
-using PhoneBook.Repositories.Interfaces;
 
-namespace PhoneBook.Repositories
+namespace PhoneBook.DataAccess
 {
     public class ContactRepository : IContactRepository
     {

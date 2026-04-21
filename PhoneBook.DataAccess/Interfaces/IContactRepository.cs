@@ -1,6 +1,6 @@
 ﻿using PhoneBook.Domain.Entities;
 
-namespace PhoneBook.Repositories.Interfaces
+namespace PhoneBook.DataAccess.Interfaces
 {
     public interface IContactRepository
     {

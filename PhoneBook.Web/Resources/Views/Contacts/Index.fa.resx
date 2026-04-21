@@ -138,6 +138,9 @@
   <data name="GalleryViewButton" xml:space="preserve">
     <value>نمای گالری</value>
   </data>
+  <data name="HeadingContactCount" xml:space="preserve">
+    <value>مخاطب</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>دفترچه تلفن</value>
   </data>
@@ -147,6 +150,9 @@
   <data name="PhonebookTitle" xml:space="preserve">
     <value>دفترچه تلفن</value>
   </data>
+  <data name="TableHeaderActions" xml:space="preserve">
+    <value>عملیات</value>
+  </data>
   <data name="TableHeaderBirthday" xml:space="preserve">
     <value>تاریخ تولد</value>
   </data>
@@ -154,7 +160,7 @@
     <value>ایمیل</value>
   </data>
   <data name="TableHeaderName" xml:space="preserve">
-    <value>نام</value>
+    <value>نام و نام خانوادگی</value>
   </data>
   <data name="TableHeaderPhone" xml:space="preserve">
     <value>شماره تماس</value>

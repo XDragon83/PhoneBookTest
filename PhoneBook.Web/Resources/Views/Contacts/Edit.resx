@@ -153,4 +153,7 @@
   <data name="TableHeaderPicture" xml:space="preserve">
     <value>Picture</value>
   </data>
+  <data name="HeadingContact" xml:space="preserve">
+    <value>Editing Contact Information</value>
+  </data>
 </root>

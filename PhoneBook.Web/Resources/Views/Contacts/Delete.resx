@@ -147,4 +147,10 @@
   <data name="HeadingConfirmation" xml:space="preserve">
     <value>Are you sure you want to delete this?</value>
   </data>
+  <data name="HeadingWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="HeadingDeleteWarning" xml:space="preserve">
+    <value>Delete Warning</value>
+  </data>
 </root>

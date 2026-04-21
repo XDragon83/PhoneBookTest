@@ -147,4 +147,10 @@
   <data name="HeadingConfirmation" xml:space="preserve">
     <value>آیا از حفظ این مخاطب مطمئن هستید؟</value>
   </data>
+  <data name="HeadingWarning" xml:space="preserve">
+    <value>هشدار</value>
+  </data>
+  <data name="HeadingDeleteWarning" xml:space="preserve">
+    <value>هشدار حذف مخاطب</value>
+  </data>
 </root>

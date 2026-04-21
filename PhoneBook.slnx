@@ -1,7 +1,6 @@
 <Solution>
-  <Project Path="PhoneBook.Data/PhoneBook.Data.csproj" Id="9f7142dd-9f61-41d1-aab0-77335a3f04b7" />
+  <Project Path="PhoneBook.DataAccess/PhoneBook.DataAccess.csproj" />
   <Project Path="PhoneBook.Domain/PhoneBook.Domain.csproj" />
-  <Project Path="PhoneBook.Repositories/PhoneBook.Repositories.csproj" Id="7f2d508c-d927-4907-89ab-1d6676a37d41" />
   <Project Path="PhoneBook.Services/PhoneBook.Services.csproj" Id="1337e745-4679-4b4a-8489-ca3224645813" />
   <Project Path="PhoneBook.Web/PhoneBook.Web.csproj" />
 </Solution>

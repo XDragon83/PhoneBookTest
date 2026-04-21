@@ -126,4 +126,10 @@
   <data name="AddContactButton" xml:space="preserve">
     <value>افزودن مخاطب جدید</value>
   </data>
+  <data name="HeadingGalleryView" xml:space="preserve">
+    <value>گالری</value>
+  </data>
+  <data name="HeadingContactCount" xml:space="preserve">
+    <value>مخاطب</value>
+  </data>
 </root>

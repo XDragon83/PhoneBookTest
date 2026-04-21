@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using PhoneBook.Data.Context;
-using PhoneBook.Repositories;
-using PhoneBook.Repositories.Interfaces;
+using PhoneBook.DataAccess.Context;
+using PhoneBook.DataAccess.Interfaces;
+using PhoneBook.DataAccess;
 using PhoneBook.Services;
 using PhoneBook.Services.Interfaces;
 using Microsoft.AspNetCore.Localization;

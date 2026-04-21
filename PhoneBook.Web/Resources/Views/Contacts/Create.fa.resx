@@ -156,4 +156,7 @@
   <data name="TextPicture" xml:space="preserve">
     <value>فقط فایل تصویری مجاز است. پیشنهاد: JPG/PNG مربعی، حداکثر حدود ۲ مگابایت</value>
   </data>
+  <data name="HeadingContact" xml:space="preserve">
+    <value>اطلاعات مخاطب</value>
+  </data>
 </root>

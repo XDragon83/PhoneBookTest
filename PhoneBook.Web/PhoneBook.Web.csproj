@@ -13,6 +13,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<ProjectReference Include="..\PhoneBook.DataAccess\PhoneBook.DataAccess.csproj" />
 		<ProjectReference Include="..\PhoneBook.Domain\PhoneBook.Domain.csproj" />
 		<ProjectReference Include="..\PhoneBook.Services\PhoneBook.Services.csproj" />
 	</ItemGroup>
